@@ -52,7 +52,9 @@ RCSwitch mySwitch = RCSwitch();
 long prevvalue = 0;
 int correctvalue = 0;
 String readString = "";
-
+int compteur = 0;
+int compteur_total = code_on_4_size + code_on_5_size;
+boolean rep_detecte = false;
 
 
 //Choix du Mode (0 envoi / 1 réception)
@@ -130,25 +132,43 @@ if (mode == 0)
       //Envoi le code brute
       envoi_code(0,0);
       envoi_code(1,0);
-      Serial.print("ENDED");
+      compteur = 0;
+      Serial.print("FIN");
     }
     
-    //Si le texte reçu est up
-    if (readString == "up")
-    {
-      //Envoi le code avec 180/3 de plus
-      envoi_code(0,180);
-      envoi_code(1,3);
-      Serial.print("ENDED");
-    }
-    
-    //Si le texte reçu est down
+    //Si le texte reçu est up (monter la luminosité)
     if (readString == "down")
     {
       //Envoi le code avec 36/1 de plus
       envoi_code(0,36);
       envoi_code(1,1);
-      Serial.print("ENDED");
+      compteur = 0;   
+      Serial.print("FIN");
+    }
+
+    //Si le texte reçu est down (baisser la luminosite)
+    if (readString == "up")
+    {
+      //Envoi les codes avec 180/3 de plus
+      envoi_code(0,180);
+      envoi_code(1,3);
+      compteur = 0;
+      Serial.print("FIN");    
+    }
+    
+    //Si le terme "rep" a été detecté, changer le nombre de répétition
+    if (rep_detecte == true)
+    {
+      mySwitch.setRepeatTransmit(readString.toInt()); //Change le nombre de répétition du message avec la valeur reçu
+      rep_detecte = false; //Retirer le drapeau (flag) rep_detecte
+      Serial.print("OK"); //Afficher le message OK dans processing
+      
+    }
+    
+    //Si le texte reçu est rep (Ecouter le prochain nombre)
+    if (readString == "rep")
+    {
+      rep_detecte = true; //Mettre le drapeau (flag) rep_detecte
     }
     
   //Serial.print(readString); //DEBUG: Voit ce qui a été récupéré
@@ -166,7 +186,7 @@ Mode apprentissage
   //Si un code est reçu
   if (mySwitch.available()) {
    
-    //Enregitrer le code
+    //Afficher le code
     long value = mySwitch.getReceivedValue();
     Serial.print(value);
     delay(1000);
@@ -184,12 +204,16 @@ Mode apprentissage
 
 void envoi_code(int type,int add)
 {
+
   if (type == 0)
  {
      //Parcours le tableau des codes 4 chiffres
      for (int i = 0; i < code_on_4_size; i++)
       {
-        Serial.println(i);
+        compteur++; //Incrémente le compteur affiché dans Processing
+        Serial.print(compteur); // Affiche la valeur du compteur / total des codes
+        Serial.print("/");
+        Serial.print(compteur_total);
         //Envoi le code au transmetteur (avec/sans ajout)
         mySwitch.send(code_on_4[i]+add,24);
       }
@@ -201,7 +225,11 @@ void envoi_code(int type,int add)
    //Parcours le tableau des codes 5 chiffres
   for (int i = 0; i < code_on_5_size; i++)
       {
-        Serial.println(i);
+        compteur++; //Incrémente le compteur affiché dans Processing
+        Serial.print(compteur); // Affiche la valeur du compteur / total des codes
+        Serial.print("/");
+        Serial.print(compteur_total);
+        //Envoi le code au transmetteurs (avec/sans ajout)
         mySwitch.send(code_on_5[i]+add,24);
       }
  }
