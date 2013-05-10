@@ -28,9 +28,9 @@ Nécessite la bibliothèqe RCSwitch !
 //Tout le programme est paramètrables ici.
 
 //Tableau avec les ID à 4 chiffres
-unsigned long code_on_4[] = {4398860, 15760652,4398111,4398112,4398113,4398114,4398115,4398116,4398117,4398118,4398119,4398120,4398121,4398122,4398123,4398124,1398125,4398125,4398124,4398127};
+unsigned long code_on_4[] = {};
 //Tableau avec les ID à 5 chiffres
-unsigned long code_on_5[] = {7732945, 7953873,4398111,4398112,4398113,4398114,4398115,4398116,4398117,4398118,4398119,4398120,4398121,4398122,4398123,4398124,1398125,4398125,4398124,4398127};
+unsigned long code_on_5[] = {};
 
 //Taille des tableaux (nombre de codes dans chaque tableau)
 int code_on_4_size = 20;
